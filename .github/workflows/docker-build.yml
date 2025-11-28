@@ -81,8 +81,15 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          # Disable caching to avoid cache-related disk space issues
+          no-cache: false
+
+      - name: Check disk space after build
+        if: always()
+        run: |
+          echo "Disk space after build:"
+          df -h
+          docker system df
 
       - name: Image digest
         run: echo ${{ steps.meta.outputs.tags }}
