@@ -35,7 +35,13 @@ jobs:
           sudo rm -rf /usr/local/lib/android
           sudo rm -rf /opt/ghc
           sudo rm -rf /opt/hostedtoolcache/CodeQL
+          sudo rm -rf /usr/local/share/boost
+          sudo rm -rf /usr/local/graalvm
+          sudo rm -rf /usr/local/.ghcup
+          sudo rm -rf /usr/share/swift
+          sudo apt-get clean
           sudo docker image prune --all --force
+          sudo docker builder prune --all --force
           echo "Disk space after cleanup:"
           df -h
 

@@ -14,16 +14,14 @@ RUN mkdir -p src && \
     echo "main = putStrLn \"dummy\"" >> src/Main.hs
 
 # Build dependencies only (this layer will be cached)
-RUN stack build --only-dependencies
+RUN stack build --only-dependencies --no-terminal
 
 # Now copy the real source code
 COPY src/ ./src/
 
-# Build the actual application and clean up to save space
-RUN stack build --copy-bins --local-bin-path /app/bin && \
-    rm -rf .stack-work && \
-    rm -rf /root/.stack/snapshots && \
-    rm -rf /root/.stack/programs
+# Build the actual application with limited parallelism to save disk space
+RUN stack build --copy-bins --local-bin-path /app/bin -j1 --no-terminal && \
+    rm -rf .stack-work
 
 # Stage 2: Create minimal runtime image
 FROM ubuntu:22.04
