@@ -4,23 +4,13 @@ FROM fpco/stack-build:lts-22.28 AS builder
 
 WORKDIR /app
 
-# Copy package configuration
+# Copy all project files
 COPY stack.yaml package.yaml ./
-
-# Create a dummy Main.hs to build dependencies
-RUN mkdir -p src && \
-    echo "module Main where" > src/Main.hs && \
-    echo "main :: IO ()" >> src/Main.hs && \
-    echo "main = putStrLn \"dummy\"" >> src/Main.hs
-
-# Build dependencies only (this layer will be cached)
-RUN stack build --only-dependencies --no-terminal
-
-# Now copy the real source code
 COPY src/ ./src/
 
-# Build the actual application with limited parallelism to save disk space
-RUN stack build --copy-bins --local-bin-path /app/bin -j1 --no-terminal && \
+# Build the application with minimal parallelism to conserve resources
+# Use --verbose to see detailed output if build fails
+RUN stack build --copy-bins --local-bin-path /app/bin -j1 --no-terminal --verbose && \
     rm -rf .stack-work
 
 # Stage 2: Create minimal runtime image
