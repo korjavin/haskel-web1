@@ -29,16 +29,23 @@ A real-time multiplayer TicTacToe game built with Haskell backend and vanilla Ja
 ```
 haskel-web1/
 ├── src/
-│   ├── Main.hs        # Entry point, server setup
-│   ├── Types.hs       # Data types and JSON instances
-│   ├── Game.hs        # TicTacToe game logic
-│   └── Server.hs      # WebSocket server and message handling
+│   ├── Main.hs                      # Entry point, server setup
+│   ├── Types.hs                     # Data types and JSON instances
+│   ├── Game.hs                      # TicTacToe game logic
+│   └── Server.hs                    # WebSocket server and message handling
 ├── public/
-│   ├── index.html     # Frontend HTML
-│   ├── style.css      # Styling
-│   └── app.js         # Frontend JavaScript
-├── stack.yaml         # Stack configuration
-└── package.yaml       # Project dependencies
+│   ├── index.html                   # Frontend HTML
+│   ├── style.css                    # Styling
+│   └── app.js                       # Frontend JavaScript
+├── .github/
+│   └── workflows/
+│       └── docker-build.yml         # GitHub Actions for Docker builds
+├── Dockerfile                       # Multi-stage Docker build
+├── .dockerignore                    # Docker ignore file
+├── docker-compose.yml               # Basic Docker Compose config
+├── docker-compose.prod.yml          # Production Docker Compose config
+├── stack.yaml                       # Stack configuration
+└── package.yaml                     # Project dependencies
 ```
 
 ## Getting Started
@@ -86,6 +93,65 @@ The server will start on `http://localhost:8080`
 4. Challenge another player from the online players list
 5. The challenged player accepts the challenge
 6. Play TicTacToe in real-time!
+
+## Docker Deployment
+
+### Using Docker Compose (Recommended for Portainer)
+
+The easiest way to deploy is using Docker Compose with pre-built images from GitHub Container Registry (GHCR):
+
+1. **Using the basic configuration:**
+```bash
+docker-compose up -d
+```
+
+2. **Using the production configuration:**
+```bash
+docker-compose -f docker-compose.prod.yml up -d
+```
+
+3. **In Portainer:**
+   - Go to "Stacks" → "Add stack"
+   - Name your stack (e.g., "tictactoe")
+   - Copy the contents of `docker-compose.yml` into the web editor
+   - Click "Deploy the stack"
+   - Access the game at `http://your-server:8080`
+
+### Building Docker Image Locally
+
+If you want to build the Docker image yourself:
+
+```bash
+# Build the image
+docker build -t tictactoe-server .
+
+# Run the container
+docker run -d -p 8080:8080 --name tictactoe tictactoe-server
+```
+
+### Pre-built Images
+
+Docker images are automatically built and published to GitHub Container Registry via GitHub Actions:
+
+- **Latest (from main branch):** `ghcr.io/korjavin/haskel-web1:latest`
+- **Specific branch:** `ghcr.io/korjavin/haskel-web1:branch-name`
+- **Specific commit:** `ghcr.io/korjavin/haskel-web1:main-sha-abc123`
+- **Tagged release:** `ghcr.io/korjavin/haskel-web1:v1.0.0`
+
+Pull and run a pre-built image:
+```bash
+docker pull ghcr.io/korjavin/haskel-web1:latest
+docker run -d -p 8080:8080 ghcr.io/korjavin/haskel-web1:latest
+```
+
+### Environment Variables
+
+The application currently doesn't require environment variables, but you can set:
+- `TZ` - Timezone (default: UTC)
+
+### Reverse Proxy Setup
+
+For production deployments with a reverse proxy (like Traefik), see `docker-compose.prod.yml` for example labels and configuration.
 
 ## How It Works
 

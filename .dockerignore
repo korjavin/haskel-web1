@@ -1,0 +1,13 @@
+.git
+.gitignore
+.stack-work
+dist
+dist-newstyle
+*.cabal
+*.hi
+*.o
+.DS_Store
+README.md
+docker-compose.yml
+Dockerfile
+.github
