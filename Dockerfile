@@ -1,19 +1,25 @@
 # Multi-stage build for Haskell TicTacToe server
 # Stage 1: Build the application
-FROM haskell:9.6.3 AS builder
+FROM fpco/stack-build:lts-22.28 AS builder
 
 WORKDIR /app
 
-# Copy package configuration files
+# Copy package configuration
 COPY stack.yaml package.yaml ./
 
-# Install dependencies (this layer will be cached)
-RUN stack setup && stack build --only-dependencies
+# Create a dummy Main.hs to build dependencies
+RUN mkdir -p src && \
+    echo "module Main where" > src/Main.hs && \
+    echo "main :: IO ()" >> src/Main.hs && \
+    echo "main = putStrLn \"dummy\"" >> src/Main.hs
 
-# Copy source code
+# Build dependencies only (this layer will be cached)
+RUN stack build --only-dependencies
+
+# Now copy the real source code
 COPY src/ ./src/
 
-# Build the application
+# Build the actual application
 RUN stack build --copy-bins --local-bin-path /app/bin
 
 # Stage 2: Create minimal runtime image
