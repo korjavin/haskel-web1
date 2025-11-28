@@ -19,8 +19,11 @@ RUN stack build --only-dependencies
 # Now copy the real source code
 COPY src/ ./src/
 
-# Build the actual application
-RUN stack build --copy-bins --local-bin-path /app/bin
+# Build the actual application and clean up to save space
+RUN stack build --copy-bins --local-bin-path /app/bin && \
+    rm -rf .stack-work && \
+    rm -rf /root/.stack/snapshots && \
+    rm -rf /root/.stack/programs
 
 # Stage 2: Create minimal runtime image
 FROM ubuntu:22.04
