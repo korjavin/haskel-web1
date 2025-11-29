@@ -1,0 +1,38 @@
+name:                tictactoe-server
+version:             0.1.0.0
+github:              "korjavin/haskel-web1"
+license:             MIT
+author:              "Your Name"
+maintainer:          "your.email@example.com"
+copyright:           "2025"
+
+extra-source-files:
+- README.md
+
+description:         A real-time TicTacToe game with Haskell backend and vanilla JS frontend
+
+dependencies:
+- base >= 4.7 && < 5
+- aeson >= 2.0
+- text >= 1.2
+- bytestring >= 0.10
+- containers >= 0.6
+- wai >= 3.2
+- warp >= 3.3
+- websockets >= 0.12
+- wai-websockets >= 3.0
+- stm >= 2.5
+- uuid >= 1.3
+- random >= 1.2
+- mtl >= 2.2
+- wai-cors >= 0.2
+
+executables:
+  tictactoe-server:
+    main:                Main.hs
+    source-dirs:         src
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    - -Wall

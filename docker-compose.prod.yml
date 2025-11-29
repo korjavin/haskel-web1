@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  tictactoe:
+    image: ghcr.io/korjavin/haskel-web1:latest
+    container_name: tictactoe-server
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - TZ=UTC
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    # Uncomment labels below if using Traefik reverse proxy
+    # labels:
+    #   - "traefik.enable=true"
+    #   - "traefik.http.routers.tictactoe.rule=Host(`tictactoe.yourdomain.com`)"
+    #   - "traefik.http.routers.tictactoe.entrypoints=websecure"
+    #   - "traefik.http.routers.tictactoe.tls.certresolver=letsencrypt"
+    #   - "traefik.http.services.tictactoe.loadbalancer.server.port=8080"
+    #   - "com.centurylinklabs.watchtower.enable=true"
+    networks:
+      - tictactoe-network
+      # - traefik-network  # Uncomment if using Traefik
+
+networks:
+  tictactoe-network:
+    driver: bridge
+  # traefik-network:  # Uncomment if using Traefik
+  #   external: true

@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  tictactoe:
+    image: ghcr.io/korjavin/haskel-web1:latest
+    container_name: tictactoe-server
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      # Add any environment variables here if needed
+      - TZ=UTC
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+    networks:
+      - tictactoe-network
+
+networks:
+  tictactoe-network:
+    driver: bridge
+
+# To use in Portainer:
+# 1. Create a new stack in Portainer
+# 2. Paste this docker-compose.yml content
+# 3. Deploy the stack
+# 4. Access the game at http://your-server:8080
+#
+# To use a specific version instead of latest:
+#   image: ghcr.io/korjavin/haskel-web1:v1.0.0
+# or use a branch tag:
+#   image: ghcr.io/korjavin/haskel-web1:main
